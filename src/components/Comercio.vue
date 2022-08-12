@@ -29,20 +29,29 @@
               <span class="card-title">Sobrevivente: {{ sobrevivente1.sobrevivente }}</span>
               
               <span>Inventário</span>
-              <div class="collection">
-                <a href="#!" v-for="(item, index) in sobrevivente1.itens" :key="item.index" class="collection-item">
-                  {{ item.item.nome }}: {{item.item.pontos}} pontos <span class="badge">{{ item.quantidade }} 
-                  <button @click="addItem1(item, index)" class="waves-effect waves-light btn-small">Ofertar 1<i class="material-icons left">arrow_forward</i></button></span>
-                </a>
-              </div>
+              <ul class="collection">
+                <li v-for="(item, index) in sobrevivente1.itens" :key="item.index" class="collection-item">
+                  <div> <span class="item-name">{{ item.item.nome }}: {{item.quantidade}}x</span> 
+                    <a @click="addItem1(item, index)" href="#!" class="secondary-content">
+                      <i class="material-icons">arrow_forward</i>
+                      <span>Ofertar 1</span>
+                    </a>
+                  </div>
+                </li>
+              </ul>
               
               <span>Itens Ofertados:</span>
-              <div class="collection">
-                <a href="#!" v-for="(item, index) in comercio.sobrevivente1.itens" :key="item.index" class="collection-item">
-                  {{ item.item.nome }}: <span class="badge">Quantidade {{ item.quantidade }} 
-                  <button @click="removeItem1(index)" class=" btn-small">Retirar 1<i class="material-icons left">arrow_back</i></button></span>
-                </a>
-              </div>
+              <ul class="collection">
+                <li v-for="(item, index) in comercio.sobrevivente1.itens" :key="item.index" class="collection-item">
+                  <div> 
+                    <span class="item-name">{{ item.item.nome }}: {{item.quantidade}}x</span> 
+                    <a @click="removeItem1(index)" href="#!" class="secondary-content">
+                      <i class="material-icons">arrow_back</i>
+                      <span>Retirar 1</span>
+                    </a>
+                  </div>
+                </li>
+              </ul>
 
               <div class="center-align total-pontos white"><span class="">Total de Pontos Ofertados: {{ totalPontos1 }}</span></div>
             </div>
@@ -55,22 +64,28 @@
               <span class="card-title">Sobrevivente: {{ sobrevivente2.sobrevivente }}</span>
               
               <span>Inventário</span>
-              <div class="collection">
-                <a href="#!" v-for="(item, index) in sobrevivente2.itens" :key="item.index" class="collection-item ">
-                  {{ item.item.nome }}: {{item.item.pontos}} pontos 
-                  <span class="badge">{{ item.quantidade }}
-                    <button @click="addItem2(item, index)" class="waves-effect waves-light btn-small">Ofertar 1<i class="material-icons left">arrow_forward</i></button>
-                  </span>
-                </a>
-              </div>
+              <ul class="collection">
+                <li v-for="(item, index) in sobrevivente2.itens" :key="item.index" class="collection-item">
+                  <div> <span class="item-name">{{ item.item.nome }}: {{item.quantidade}}x</span> 
+                    <a @click="addItem2(item, index)" href="#!" class="secondary-content">
+                      <i class="material-icons">arrow_forward</i>
+                      <span>Ofertar 1</span>
+                    </a>
+                  </div>
+                </li>
+              </ul>
 
               <span>Itens Ofertados:</span>
-              <div class="collection">
-                <a href="#!" v-for="(item, index) in comercio.sobrevivente2.itens" :key="item.index" class="collection-item">
-                  {{ item.item.nome }}: <span class="badge">Quantidade {{ item.quantidade }}
-                  <button @click="removeItem2(index)" class="waves-effect waves-light btn-small">Retirar 1<i class="material-icons left">arrow_back</i></button></span>
-                </a>
-              </div>
+              <ul class="collection">
+                <li href="#!" v-for="(item, index) in comercio.sobrevivente2.itens" :key="item.index" class="collection-item">
+                  <div> <span class="item-name">{{ item.item.nome }}: {{item.quantidade}}x</span> 
+                    <a @click="removeItem2(index)" href="#!" class="secondary-content">
+                      <i class="material-icons">arrow_forward</i>
+                      <span>Retirar 1</span>
+                    </a>
+                  </div>
+                </li>
+              </ul>
               
               <div class="center-align total-pontos white"><span>Total de Pontos Ofertados: {{ totalPontos2 }}</span></div>
             </div>
@@ -295,5 +310,19 @@
     margin-left: 10px;
   }
 
+  .collection-tem span {
+    color: black !important;
+  }
+
+  .item-name {
+    color: #26a69a;
+  }
+
+  li .secondary-content {
+    display: flex;
+  }
+  .collection .collection-item {
+    padding: 7px 7px;
+  }
 </style>
 
