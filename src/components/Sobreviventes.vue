@@ -6,6 +6,8 @@
 
         <Message :msg="msg" v-show="msg" />
 
+        <Loading :isLoading="isLoading"/>
+
         <form action="#" @submit.prevent="">
 
             <div class="row">
@@ -126,8 +128,8 @@
 
             <td >
                 <div class="center-align">
-                    <button @click="preEdit(sobrevivente)" class="waves-effect btn-small blue darken-1"><i class="material-icons">edit_location</i></button>
-                    <button @click="alertaInfeccao(sobrevivente)" class="waves-effect btn-small red darken-1"><i class="material-icons">warning</i></button>
+                    <button :disabled="sobrevivente.estaInfectado" @click="preEdit(sobrevivente)" class="waves-effect btn-small blue darken-1"><i class="material-icons">edit_location</i></button>
+                    <button :disabled="sobrevivente.estaInfectado" @click="alertaInfeccao(sobrevivente)" class="waves-effect btn-small red darken-1"><i class="material-icons">warning</i></button>
                 </div>
             </td>
 
@@ -157,6 +159,7 @@
     import Sobreviventes from '../services/sobreviventes';
     import Itens from '../services/itens';
     import Message from './Message.vue'
+    import Loading from './Loading.vue'
 
     export default {
 
@@ -178,12 +181,18 @@
                 msg: "",
                 edit: false,
                 infected: {},
-                infoId: ""
+                infoId: "",
+                isLoading: false
             }
         },
 
         components: {
-            Message
+            Message,
+            Loading,
+        },
+
+        beforeCreate() {
+            this.isLoading = true
         },
 
         mounted() {
@@ -204,6 +213,7 @@
             },
             
             salvar() {
+                this.isLoading = true
                 this.itens.forEach(item => {
                     if(parseInt(item.quantidade) > 0)
                         this.inventario.push({
@@ -223,6 +233,7 @@
                         this.listarItens()
                     } else {
                         this.showMessage(response.data.message)
+                        this.isLoading = false
                     }
                 }).catch(err => {
                     if (err.response.data.message)  
@@ -230,21 +241,26 @@
                     else{
                         this.showMessage("Erro ao salvar")
                     }
+                    this.isLoading = false
                 })
 
             },
 
             editar() {
+                this.isLoading = true
                 Sobreviventes.atualizarLocalizacao(this.sobrevivente).then(response => {
                     if(response.status == 200) {
                         this.edit = false
                         this.showMessage(`Localização de ${this.sobrevivente.nome} atualizada!`)
                         this.sobrevivente = {}
+                        this.isLoading = false
                     } else {
                         this.showMessage(response.data.message)
+                        this.isLoading = false
                     }
                 }).catch(err => {
                     this.showMessage("Erro ao atualizar")
+                    this.isLoading = false
                 })
             },
 
@@ -257,17 +273,21 @@
             },
 
             listar() {
+                this.isLoading = true
                 Sobreviventes.listar().then(response => {
                     this.sobreviventes = response.data
+                    this.isLoading = false
                 })
             },
 
             listarItens() {
+                this.isLoading = true
                 Itens.listar().then(response => {
                     this.itens = response.data
                     this.itens.forEach(e => {
                         e.quantidade = 0
                     })
+                    this.isLoading = false
                 })
             },
 

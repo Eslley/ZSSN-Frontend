@@ -6,6 +6,8 @@
 
       <Message :msg="msg" v-show="msg"/>
 
+      <Loading :isLoading="isLoading"/>
+
       <div class="row two-inputs">
         
         <div class="col m6 s12">
@@ -107,6 +109,7 @@
   import Comercio from '../services/comercio';
   import Inventarios from '../services/inventarios';
   import Message from './Message.vue'
+  import Loading from './Loading.vue'
 
   export default {
     name: "Comercio",
@@ -129,12 +132,14 @@
             sobrevivente: "",
             itens: []
           }
-        }
+        },
+        isLoading: false
       }
     },
 
     components: {
-      Message
+      Message,
+      Loading
     },
 
     methods: {
@@ -150,6 +155,8 @@
       },
 
       buscar() {
+        this.isLoading = true
+
         this.sobrevivente1 = {}
         this.sobrevivente2 = {}
         this.totalPontos1 = 0
@@ -157,6 +164,7 @@
 
         if(this.id1 == this.id2 || this.id1 == "" || this.id2 == "" ){
           this.showMessage("Preencha os campos corretamente!")
+          this.isLoading = false
         } else {
 
           Inventarios.getInventario(this.id1).then(response => {
@@ -170,14 +178,17 @@
                 this.sobrevivente1 = response.data
                 this.sobrevivente2 = response2.data
 
+                this.isLoading = false
               }
             }).catch(err => {
+              this.isLoading = false
               this.showMessage("Erro ao buscar sobrevivente!")
               if(err.response.data.message) {
                 this.showMessage((err.response.data.message))
               }
             })
           }).catch(err => {
+            this.isLoading = false
             this.showMessage("Erro ao buscar sobrevivente!")
             if(err.response.data.message) {
               this.showMessage((err.response.data.message))
@@ -231,6 +242,7 @@
       },
 
       requestTroca() {
+        this.isLoading = true
         if(this.totalPontos1 == this.totalPontos2) {
           this.comercio.sobrevivente1.sobrevivente = this.sobrevivente1.sobreviventeId
 
@@ -239,6 +251,7 @@
           this.preComercio()
 
           Comercio.trocar(this.comercio).then(response => {
+            this.isLoading = false
             if(response.status == 200) {
               this.showMessage("Troca realizada com sucesso!")
               this.clearData()
@@ -251,6 +264,7 @@
             }
           })
         } else {
+          this.isLoading = false
           this.showMessage("A quantidade de pontos oferecidos é diferente!");
         }
         

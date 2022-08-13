@@ -58,7 +58,6 @@ export default {
     Sobreviventes,
     Inventarios,
     Relatorios,
-    Comercio,
     Comercio
 }
   
