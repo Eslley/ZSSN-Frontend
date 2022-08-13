@@ -115,7 +115,7 @@
           <tr v-for="sobrevivente in sobreviventes" :key="sobrevivente.id">
 
             <td>{{ sobrevivente.id }}</td>
-            <td>{{ sobrevivente.nome }}</td>
+            <td><a @click="moreInfo = sobrevivente" data-target="moreInfo" class="more-info-link modal-trigger">{{ sobrevivente.nome }}</a></td>
             <!-- <td>{{ sobrevivente.idade }}</td>
             <td>{{ sobrevivente.sexo.toUpperCase() }}</td> -->
             <!-- <td>{{ sobrevivente.latitude }}</td>
@@ -129,7 +129,7 @@
             <td >
                 <div class="center-align">
                     <button :disabled="sobrevivente.estaInfectado" @click="preEdit(sobrevivente)" class="waves-effect btn-small blue darken-1"><i class="material-icons">edit_location</i></button>
-                    <button :disabled="sobrevivente.estaInfectado" @click="alertaInfeccao(sobrevivente)" class="waves-effect btn-small red darken-1"><i class="material-icons">warning</i></button>
+                    <button @click="infected = sobrevivente" :disabled="sobrevivente.estaInfectado" data-target="modalContaminacao" class="waves-effect btn-small red darken-1 modal-trigger"><i class="material-icons">warning</i></button>
                 </div>
             </td>
 
@@ -139,7 +139,7 @@
       
       </table>
 
-        <!-- <div id="modalContaminacao" class="modal">
+        <div id="modalContaminacao" class="modal">
             <div class="modal-content">
                 <h4>Alerta de Contaminação!</h4>
                 <p>Digite o ID do informante da contaminação de {{ infected.nome }}:</p>
@@ -149,7 +149,20 @@
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
                 <a @click="alertaInfeccao()" href="#!" class="modal-close waves-effect waves-green btn-flat">Confirmar</a>
             </div>
-        </div> -->
+        </div>
+
+        <div id="moreInfo" class="modal">
+            <div class="modal-content">
+                <h4>{{moreInfo.nome}}</h4>
+                <span><b>Idade:</b> {{moreInfo.idade}}</span><br>
+                <span><b>Sexo:</b> {{ moreInfo.sexo == "m" ? "Masculino" : "Feminino"}}</span><br>
+                <span><b>Latitude:</b> {{moreInfo.latitude}}</span><br>
+                <span><b>Longitude:</b> {{moreInfo.longitude}}</span><br>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -182,7 +195,8 @@
                 edit: false,
                 infected: {},
                 infoId: "",
-                isLoading: false
+                isLoading: false,
+                moreInfo: {}
             }
         },
 
@@ -302,22 +316,27 @@
                 this.sobrevivente = {}
             },
 
-            alertaInfeccao(sobrevivente) {
-                this.infoId = prompt(`Digite o ID do informante da contaminação de ${sobrevivente.nome}:`)
-
-                if(!isNaN(this.infoId)) {
-
-                    Sobreviventes.alertInfected(this.infoId, sobrevivente.id).then(response => {
+            alertaInfeccao() {
+                
+                if(this.infoId != "") {
+                    Sobreviventes.alertInfected(this.infoId, this.infected.id).then(response => {
                         if(response.status == 200) {
                             this.showMessage(response.data.message)
                             this.listar()
+                            this.infoId = ""
+                            this.infected = {}
                         }
                     }).catch(err => {
-                            this.showMessage(err.message)
+                        if (err.response.data.message)  
+                            this.showMessage("Um sobrevivente não pode sinalizar a própria contaminação")
+                        else
+                            this.showMessage("Erro ao sinalizar contaminação!")
                     })
+
                 } else {
-                    this.showMessage("Digite um valor numerico!")
+                    this.showMessage("Digite um valor válido!")
                 }
+                
             }
 
         }
@@ -339,4 +358,19 @@
     .td-input {
         width: 50px;
     }
+
+    #moreInfo {
+        top: 30% !important;
+    }
+
+    @media screen and (min-width: 800px) {
+        #moreInfo {
+            max-width: 20%;
+        }
+    }
+
+    .more-info-link {
+        cursor: pointer;
+    }
+
 </style>
