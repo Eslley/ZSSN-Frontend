@@ -34,6 +34,7 @@
         left: 50%;
         margin: -25px 0 0 -25px;left: 50%;
         top: 50%;
+        background-color: rgba(0, 0reen, 0lue, 0.5);
     } 
 
 </style>

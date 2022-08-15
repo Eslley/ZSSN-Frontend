@@ -8,7 +8,7 @@
 
         <Loading :isLoading="isLoading"/>
 
-        <form action="#" @submit.prevent="">
+        <form v-show="edit || add" action="#" @submit.prevent="">
 
             <div class="row">
                 <div class="input-field col l10 s12">
@@ -86,12 +86,14 @@
             </table>
 
             <div class="center-align save-button">
-                <button @click="clear()" class="waves-effect waves-light btn-small">Limpar<i class="material-icons left">clear</i></button>
+                <button @click="clear()" class="waves-effect waves-light btn-small">Fechar<i class="material-icons left">clear</i></button>
                 <button @click="saveOrEdit()" class="waves-effect waves-light btn-small blue modal-trigger">Salvar<i class="material-icons left">save</i></button>
             </div>
       </form>
 
-      <table class="center">
+        <a @click="showForm()" v-show="!add && !edit" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Adicionar</a>
+      
+      <table v-show="!add && !edit" class="center">
 
         <thead>
 
@@ -193,6 +195,7 @@
                 inventario: [],
                 msg: "",
                 edit: false,
+                add: false,
                 infected: {},
                 infoId: "",
                 isLoading: false,
@@ -211,7 +214,6 @@
 
         mounted() {
             this.listar()
-            this.listarItens()
         },
 
         methods: {
@@ -244,6 +246,7 @@
                         this.sobrevivente = {}
                         this.itens = []
                         this.inventario = []
+                        this.add = false
                         this.listarItens()
                     } else {
                         this.showMessage(response.data.message)
@@ -313,6 +316,7 @@
 
             clear() {
                 this.edit = false
+                this.add = false
                 this.sobrevivente = {}
             },
 
@@ -328,7 +332,7 @@
                         }
                     }).catch(err => {
                         if (err.response.data.message)  
-                            this.showMessage("Um sobrevivente não pode sinalizar a própria contaminação")
+                            this.showMessage(err.response.data.message)
                         else
                             this.showMessage("Erro ao sinalizar contaminação!")
                     })
@@ -337,6 +341,12 @@
                     this.showMessage("Digite um valor válido!")
                 }
                 
+            },
+
+            showForm() {
+                this.add = true;
+                this.itens = []
+                this.listarItens()
             }
 
         }
